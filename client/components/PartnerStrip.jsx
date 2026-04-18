@@ -3,11 +3,12 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 const PARTNERS = [
-  { label: 'METRO-HEALTH', cls: 'font-bold tracking-tighter text-2xl' },
-  { label: 'VITALIS',      cls: 'font-black italic text-2xl' },
-  { label: 'NEXUS_CARE',   cls: 'font-extralight tracking-widest text-2xl' },
-  { label: 'MED-CORE',     cls: 'font-semibold border-b-2 border-on-surface text-2xl' },
-  { label: 'BioSphere',    cls: 'font-mono uppercase text-2xl' },
+  { label: 'HAMMOUD HOSPITAL',   cls: 'font-bold tracking-tight text-xl' },
+  { label: 'LABIB MEDICAL',      cls: 'font-black italic text-xl' },
+  { label: 'RED CROSS LEBANON',  cls: 'font-extralight tracking-widest text-xl' },
+  { label: 'SAIDA GOV. HOSPITAL',cls: 'font-semibold text-xl' },
+  { label: 'MAKASSED',           cls: 'font-mono uppercase text-xl' },
+  { label: 'RIZK HOSPITAL',      cls: 'font-bold tracking-tighter text-xl' },
 ]
 
 export default function PartnerStrip() {
@@ -26,13 +27,11 @@ export default function PartnerStrip() {
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.6 }}
         >
-          Trusted by Global Healthcare Networks
+          Partner Hospitals Across South Lebanon
         </motion.h2>
 
-        {/* Marquee wrapper */}
         <div className="relative overflow-hidden">
           <div className="flex animate-marquee gap-24 w-max opacity-40 hover:opacity-70 grayscale hover:grayscale-0 transition-all duration-700">
-            {/* Duplicate for seamless loop */}
             {[...PARTNERS, ...PARTNERS].map((p, i) => (
               <span key={i} className={`${p.cls} shrink-0 text-on-surface`}>
                 {p.label}

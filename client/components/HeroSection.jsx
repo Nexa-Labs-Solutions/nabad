@@ -2,40 +2,30 @@
 import { useEffect, useState } from 'react'
 import { motion, animate } from 'framer-motion'
 
-const BARS = [
-  { pct: 40,  cls: 'bg-primary/20' },
-  { pct: 60,  cls: 'bg-primary/40' },
-  { pct: 90,  cls: 'bg-pulse-gradient' },
-  { pct: 75,  cls: 'bg-primary/60' },
-  { pct: 55,  cls: 'bg-primary/30' },
-  { pct: 85,  cls: 'bg-[#00daf3]/20' },
-  { pct: 45,  cls: 'bg-[#00daf3]/40' },
+const LIVE_REQUESTS = [
+  { type: 'A+', hospital: 'Hammoud Hospital', dist: '0.8 km', ago: '2 min ago', urgent: true },
+  { type: 'O-', hospital: 'Saida Gov. Hospital', dist: '1.4 km', ago: '5 min ago', urgent: true },
+  { type: 'B+', hospital: 'Labib Medical Center', dist: '3.2 km', ago: '12 min ago', urgent: false },
 ]
 
-const AVATARS = [
-  {
-    src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAMMv6qtQaeAgEivwrUNAPwmSV1a31DIiuIAaEFQgVR3-BXFQcRyaw8f_XH0HfwFn92mjIWVZEDVUy3-TtVPP3Qk-G7C_w_VOyoFet3M9JPKmjm9YdKvLaE_L4m5d89lWkAFOXRl8XaDRpZNm7Fe8kfpMltRR_wjjaR7S8-WOgN9KvXA1cEsazj-X5bSuHjHb_c3gxm_Qsnqg2s1it2JwlgaViA_qM_4xwadpIlKDIvyWkHhW_8Uf8jo7kAMACJP4TuUPW9Tx3VQxc',
-    alt: 'Medical professional',
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCe0ldZOaGsCTze9CdQ140Mnb6schC9vbF2Oc7Pft8AyCxNwE2bP5om0shqwAniUV7ennTBK0IHs4BA2Mc9rNmY2kSExf1LWal0t00evC1EEsSM_NR-R1OmaeTfUIXQWEDeeEXkfVv0CGcH_nUax-O8_Nmotb6Je2CAyP0ByyySkGjt8SnhY09Sj9fYJMhisHZfkdd8sQqLWns4Gr4_Pc59-FNk_zG_JBQwdHF2ZcFd9RoUDtS2-Q_7Wjpq9RyIEhtZ8GaxkTqc7z0',
-    alt: 'Young woman in clinic',
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfXlOgFNak8sJEHdwoZKVEtq-MTTAnmvFUzdEzkqcAMAFWQW4qY7U2AIUhT5gOyct5z32dvkd7ilIAVM0n0U8-NirfNUE88fGdTXvzTCszb9mH6TczoxhgUX9CPYf7cSEQn-7HoPvUYIsxodbumV3y0K059psCHu01Wlpc5d64gkIGTAK40wDlsnna_eqZPsBIdUDbzJ-XcAZ-KBdLPcF4iqXfP1ex6puOhKcrGzpHvNkFraDTpPT77-VVsqIl5rKl_3N9A5TiwEg',
-    alt: 'Senior researcher',
-  },
-]
+const BLOOD_COLORS = {
+  'A+':  'bg-[#ff5260]/20 text-[#ffb3b3] border-[#ff5260]/30',
+  'A-':  'bg-[#ff5260]/20 text-[#ffb3b3] border-[#ff5260]/30',
+  'O-':  'bg-[#ff3030]/20 text-[#ff9090] border-[#ff3030]/40',
+  'O+':  'bg-[#ff5260]/15 text-[#ffb3b3] border-[#ff5260]/25',
+  'B+':  'bg-[#00daf3]/10 text-[#00daf3] border-[#00daf3]/20',
+  'AB+': 'bg-purple-500/10 text-purple-300 border-purple-500/20',
+}
 
 export default function HeroSection() {
-  const [counter, setCounter] = useState('95.0')
+  const [donorCount, setDonorCount] = useState(1100)
 
   useEffect(() => {
-    const controls = animate(95, 99.8, {
-      duration: 2.2,
-      delay: 1.4,
+    const controls = animate(1100, 1247, {
+      duration: 2.5,
+      delay: 1.2,
       ease: 'easeOut',
-      onUpdate: (v) => setCounter(v.toFixed(1)),
+      onUpdate: (v) => setDonorCount(Math.round(v)),
     })
     return () => controls.stop()
   }, [])
@@ -44,10 +34,11 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       {/* Background orbs */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] animate-float-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-tertiary/10 rounded-full blur-[150px] animate-float-slow-delay" />
+        <div className="absolute top-1/4 left-1/3 w-[550px] h-[550px] bg-[#ff5260]/8 rounded-full blur-[130px] animate-float-slow" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#00daf3]/6 rounded-full blur-[150px] animate-float-slow-delay" />
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#ff5260]/5 rounded-full blur-[100px]" />
         <div
-          className="absolute inset-0 opacity-10"
+          className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/carbon-fibre.png')" }}
         />
       </div>
@@ -55,14 +46,21 @@ export default function HeroSection() {
       <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         {/* Left column */}
         <div className="lg:col-span-7">
-          <motion.label
-            className="font-label text-sm uppercase tracking-widest text-primary mb-4 block"
+          <motion.div
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#ff5260]/10 border border-[#ff5260]/20 mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            The Kinetic Core v2.0
-          </motion.label>
+            <motion.span
+              className="w-2 h-2 rounded-full bg-[#ff5260]"
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ duration: 1.4, repeat: Infinity }}
+            />
+            <span className="text-xs font-bold text-[#ff5260] uppercase tracking-widest">
+              Saida, Lebanon · Blood Donation Network
+            </span>
+          </motion.div>
 
           <div className="text-6xl lg:text-8xl font-black tracking-tighter leading-tight mb-8">
             <motion.div
@@ -71,14 +69,14 @@ export default function HeroSection() {
               transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
               Every{' '}
-              <span className="text-gradient-primary">Pulse</span>
+              <span className="text-gradient-primary">Drop</span>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
             >
-              Matters.
+              Saves a Life.
             </motion.div>
           </div>
 
@@ -88,7 +86,9 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.75 }}
           >
-            The world&apos;s fastest blood supply network. Real-time matching, predictive logistics, and instant emergency broadcasts powered by Nabad&apos;s kinetic core engine.
+            Nabad connects hospitals in urgent need with compatible donors nearby.
+            Post a blood request, reach eligible donors instantly, and confirm
+            life-saving donations — all in real time.
           </motion.p>
 
           <motion.div
@@ -98,94 +98,157 @@ export default function HeroSection() {
             transition={{ duration: 0.6, delay: 0.9 }}
           >
             <motion.button
-              className="px-8 py-4 bg-pulse-gradient rounded-xl font-bold text-on-primary-container glow-crimson flex items-center gap-3"
-              whileHover={{ scale: 1.04, boxShadow: '0 0 28px rgba(255,82,96,0.45)' }}
+              className="px-8 py-4 bg-pulse-gradient rounded-xl font-bold text-[#5b0011] glow-crimson flex items-center gap-3 text-base"
+              whileHover={{ scale: 1.04, boxShadow: '0 0 32px rgba(255,82,96,0.5)' }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 400, damping: 15 }}
             >
-              Launch Dashboard
-              <span className="material-symbols-outlined">trending_up</span>
+              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1", fontSize: '20px' }}>
+                emergency
+              </span>
+              Request Blood Now
             </motion.button>
 
             <motion.button
-              className="px-8 py-4 bg-surface-container-low border border-outline-variant/15 rounded-xl font-bold text-on-surface flex items-center gap-3"
-              whileHover={{ backgroundColor: '#1a202c', scale: 1.02 }}
+              className="px-8 py-4 bg-transparent border border-[#ffb3b3]/25 rounded-xl font-bold text-[#ffb3b3] flex items-center gap-3 text-base hover:border-[#ffb3b3]/50 transition-colors"
+              whileHover={{ backgroundColor: 'rgba(255,179,179,0.05)', scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 400, damping: 15 }}
             >
-              View Analytics
-              <span className="material-symbols-outlined">monitoring</span>
+              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1", fontSize: '20px' }}>
+                volunteer_activism
+              </span>
+              Register as Donor
             </motion.button>
+          </motion.div>
+
+          {/* Trust badges */}
+          <motion.div
+            className="flex flex-wrap items-center gap-6 mt-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.1 }}
+          >
+            {[
+              { icon: 'local_hospital', label: '47 Partner Hospitals' },
+              { icon: 'group', label: '1,200+ Donors' },
+              { icon: 'favorite', label: '3,000+ Lives Saved' },
+            ].map((b) => (
+              <div key={b.label} className="flex items-center gap-2 text-sm text-[#e3bebd]/60">
+                <span className="material-symbols-outlined text-[#ff5260]" style={{ fontSize: '16px' }}>
+                  {b.icon}
+                </span>
+                {b.label}
+              </div>
+            ))}
           </motion.div>
         </div>
 
-        {/* Right column — data card */}
+        {/* Right column — live feed card */}
         <div className="lg:col-span-5 relative">
           <motion.div
-            className="relative bg-surface-container-lowest/40 backdrop-blur-xl p-6 rounded-2xl border border-outline-variant/10 shadow-2xl overflow-hidden"
+            className="relative bg-[#080e1a]/60 backdrop-blur-xl p-6 rounded-2xl border border-[#5b4040]/20 shadow-2xl overflow-hidden"
             initial={{ opacity: 0, x: 40, scale: 0.95 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Live badge */}
-            <div className="absolute top-0 right-0 p-4">
-              <span className="flex items-center gap-2 text-xs font-bold text-tertiary">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-xs font-bold text-[#e3bebd]/50 uppercase tracking-widest">
+                Active Blood Requests
+              </span>
+              <span className="flex items-center gap-2 text-xs font-bold text-[#ff5260]">
                 <motion.span
-                  className="w-2 h-2 rounded-full bg-tertiary"
+                  className="w-2 h-2 rounded-full bg-[#ff5260]"
                   animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                  transition={{ duration: 1.2, repeat: Infinity }}
                 />
-                LIVE FEED
+                LIVE
               </span>
             </div>
 
-            {/* Counter */}
-            <div className="mb-8">
-              <span className="text-xs uppercase tracking-widest text-on-surface-variant/60 block mb-1">
-                Global Success Rate
-              </span>
-              <div className="text-4xl font-black text-on-surface tabular-nums">
-                {counter}
-                <span className="text-primary">%</span>
-              </div>
-            </div>
-
-            {/* Sparkline bars */}
-            <div className="h-64 flex items-end gap-2 overflow-hidden">
-              {BARS.map((bar, i) => (
+            {/* Request cards */}
+            <div className="space-y-3 mb-6">
+              {LIVE_REQUESTS.map((req, i) => (
                 <motion.div
                   key={i}
-                  className={`flex-1 rounded-t ${bar.cls}`}
-                  initial={{ height: 0 }}
-                  animate={{ height: `${bar.pct}%` }}
-                  transition={{ duration: 0.9, delay: 1.3 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                />
+                  className={`flex items-center gap-4 p-4 rounded-xl border ${
+                    req.urgent
+                      ? 'bg-[#ff5260]/8 border-[#ff5260]/15'
+                      : 'bg-[#0d131f]/60 border-[#5b4040]/15'
+                  }`}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.9 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <div className={`w-12 h-12 rounded-lg border flex items-center justify-center font-black text-sm shrink-0 ${
+                    BLOOD_COLORS[req.type] || 'bg-[#ff5260]/15 text-[#ffb3b3] border-[#ff5260]/25'
+                  }`}>
+                    {req.type}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-[#dde2f3] truncate">{req.hospital}</p>
+                    <p className="text-xs text-[#e3bebd]/50 mt-0.5">{req.dist} · {req.ago}</p>
+                  </div>
+                  {req.urgent && (
+                    <span className="shrink-0 text-xs font-bold text-[#ff5260] bg-[#ff5260]/10 px-2 py-1 rounded-md border border-[#ff5260]/20">
+                      URGENT
+                    </span>
+                  )}
+                </motion.div>
               ))}
             </div>
 
-            {/* Avatars */}
-            <div className="mt-6 flex justify-between items-center">
-              <div className="flex -space-x-3">
-                {AVATARS.map((av, i) => (
-                  <motion.img
-                    key={i}
-                    className="w-10 h-10 rounded-full border-2 border-surface shadow-lg object-cover"
-                    src={av.src}
-                    alt={av.alt}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: 1.8 + i * 0.1 }}
-                  />
-                ))}
+            {/* Donors nearby stat */}
+            <motion.div
+              className="bg-[#0d131f]/80 rounded-xl p-4 border border-[#5b4040]/15 flex items-center justify-between"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1.35 }}
+            >
+              <div>
+                <p className="text-xs text-[#e3bebd]/50 uppercase tracking-widest mb-1">
+                  Donors Nearby Right Now
+                </p>
+                <p className="text-3xl font-black tabular-nums text-[#dde2f3]">
+                  {donorCount.toLocaleString()}
+                  <span className="text-[#ffb3b3] text-2xl">+</span>
+                </p>
               </div>
-              <motion.span
-                className="text-xs font-medium text-on-surface-variant"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4, delay: 2.2 }}
-              >
-                +1.2k Active Donors
-              </motion.span>
+              <div className="flex flex-col items-end gap-1">
+                <div className="flex -space-x-2">
+                  {['bg-[#ff5260]', 'bg-[#ffb3b3]', 'bg-[#00daf3]', 'bg-[#ff5260]/60'].map((c, i) => (
+                    <motion.div
+                      key={i}
+                      className={`w-7 h-7 rounded-full ${c} border-2 border-[#080e1a]`}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: 1.6 + i * 0.08 }}
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-[#e3bebd]/40">within 5 km of Saida</p>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Floating match badge */}
+          <motion.div
+            className="absolute -bottom-5 -left-5 bg-[#0d131f] p-4 rounded-xl border border-[#5b4040]/20 shadow-2xl flex items-center gap-3"
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.6, delay: 1.5, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="w-10 h-10 rounded-full bg-[#00daf3]/10 flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[#00daf3]" style={{ fontSize: '20px' }}>
+                bolt
+              </span>
+            </div>
+            <div>
+              <p className="text-xs text-[#e3bebd]/50 uppercase tracking-widest">Avg. Match Time</p>
+              <p className="text-lg font-black text-[#dde2f3]">
+                &lt;3 <span className="text-sm font-medium text-[#e3bebd]/60">minutes</span>
+              </p>
             </div>
           </motion.div>
         </div>
