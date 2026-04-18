@@ -201,55 +201,57 @@ export default function HeroSection() {
 
             {/* Donors nearby stat */}
             <motion.div
-              className="bg-[#0d131f]/80 rounded-xl p-4 border border-[#5b4040]/15 flex items-center justify-between"
+              className="bg-[#0d131f]/80 rounded-xl p-4 border border-[#5b4040]/15"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 1.35 }}
             >
-              <div>
-                <p className="text-xs text-[#e3bebd]/50 uppercase tracking-widest mb-1">
-                  Donors Nearby Right Now
-                </p>
-                <p className="text-3xl font-black tabular-nums text-[#dde2f3]">
-                  {donorCount.toLocaleString()}
-                  <span className="text-[#ffb3b3] text-2xl">+</span>
-                </p>
-              </div>
-              <div className="flex flex-col items-end gap-1">
-                <div className="flex -space-x-2">
-                  {['bg-[#ff5260]', 'bg-[#ffb3b3]', 'bg-[#00daf3]', 'bg-[#ff5260]/60'].map((c, i) => (
-                    <motion.div
-                      key={i}
-                      className={`w-7 h-7 rounded-full ${c} border-2 border-[#080e1a]`}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3, delay: 1.6 + i * 0.08 }}
-                    />
-                  ))}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-[#e3bebd]/50 uppercase tracking-widest mb-1">
+                    Donors Nearby Right Now
+                  </p>
+                  <p className="text-3xl font-black tabular-nums text-[#dde2f3]">
+                    {donorCount.toLocaleString()}
+                    <span className="text-[#ffb3b3] text-2xl">+</span>
+                  </p>
                 </div>
-                <p className="text-xs text-[#e3bebd]/40">within 5 km of Saida</p>
+                <div className="flex flex-col items-end gap-1">
+                  <div className="flex -space-x-2">
+                    {['bg-[#ff5260]', 'bg-[#ffb3b3]', 'bg-[#00daf3]', 'bg-[#ff5260]/60'].map((c, i) => (
+                      <motion.div
+                        key={i}
+                        className={`w-7 h-7 rounded-full ${c} border-2 border-[#080e1a]`}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3, delay: 1.6 + i * 0.08 }}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-xs text-[#e3bebd]/40">within 5 km of Saida</p>
+                </div>
               </div>
-            </motion.div>
-          </motion.div>
 
-          {/* Floating match badge */}
-          <motion.div
-            className="absolute -bottom-5 -left-5 bg-[#0d131f] p-4 rounded-xl border border-[#5b4040]/20 shadow-2xl flex items-center gap-3"
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 1.5, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div className="w-10 h-10 rounded-full bg-[#00daf3]/10 flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-[#00daf3]" style={{ fontSize: '20px' }}>
-                bolt
-              </span>
-            </div>
-            <div>
-              <p className="text-xs text-[#e3bebd]/50 uppercase tracking-widest">Avg. Match Time</p>
-              <p className="text-lg font-black text-[#dde2f3]">
-                &lt;3 <span className="text-sm font-medium text-[#e3bebd]/60">minutes</span>
-              </p>
-            </div>
+              {/* Avg match time — inline below donors count */}
+              <motion.div
+                className="mt-3 pt-3 border-t border-[#5b4040]/20 flex items-center gap-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1.7 }}
+              >
+                <div className="w-8 h-8 rounded-full bg-[#00daf3]/10 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[#00daf3]" style={{ fontSize: '16px' }}>
+                    bolt
+                  </span>
+                </div>
+                <div>
+                  <p className="text-xs text-[#e3bebd]/50 uppercase tracking-widest">Avg. Match Time</p>
+                  <p className="text-base font-black text-[#dde2f3]">
+                    &lt;3 <span className="text-sm font-medium text-[#e3bebd]/60">minutes</span>
+                  </p>
+                </div>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </div>
       </div>

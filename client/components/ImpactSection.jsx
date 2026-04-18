@@ -51,15 +51,15 @@ export default function ImpactSection() {
 
           {/* Floating stats badge */}
           <motion.div
-            className="absolute -bottom-6 -right-6 bg-surface p-6 rounded-xl border border-outline-variant/20 shadow-2xl"
+            className="absolute bottom-3 right-3 lg:-bottom-6 lg:-right-6 bg-surface p-4 lg:p-6 rounded-xl border border-outline-variant/20 shadow-2xl"
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
             transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="text-sm font-label text-tertiary mb-1 tracking-widest uppercase">
+            <div className="text-xs font-label text-tertiary mb-1 tracking-widest uppercase">
               Match Success Rate
             </div>
-            <div className="text-3xl font-black tabular-nums">
+            <div className="text-2xl lg:text-3xl font-black tabular-nums">
               {matchRate}
               <span className="text-[#ff5260]">%</span>
             </div>

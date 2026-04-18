@@ -43,7 +43,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center gap-8">
           <NabadFooterLogo />
 
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-4 justify-center">
             {LINKS.map((label) => (
               <motion.a
                 key={label}
