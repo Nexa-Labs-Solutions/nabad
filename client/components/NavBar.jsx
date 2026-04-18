@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const NAV_LINKS = ['How It Works', 'For Hospitals', 'For Donors', 'About']
 
@@ -37,6 +37,7 @@ function NabadLogo() {
 
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -76,6 +77,7 @@ export default function NavBar() {
 
         <div className="flex items-center gap-3">
           <motion.button
+            onClick={() => router.push('/sign-in')}
             className="px-5 py-2 rounded-lg border border-[#ffb3b3]/25 text-[#ffb3b3] font-semibold text-sm hover:border-[#ffb3b3]/50 transition-colors"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
@@ -85,6 +87,7 @@ export default function NavBar() {
           </motion.button>
 
           <motion.button
+            onClick={() => router.push('/sign-up')}
             className="px-5 py-2 bg-pulse-gradient rounded-lg text-[#5b0011] font-bold text-sm glow-crimson"
             whileHover={{ scale: 1.05, boxShadow: '0 0 22px rgba(255,82,96,0.45)' }}
             whileTap={{ scale: 0.96 }}

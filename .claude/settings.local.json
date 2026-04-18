@@ -12,7 +12,9 @@
       "Bash(npm create *)",
       "WebFetch(domain:stitch.withgoogle.com)",
       "Skill(stitch-design)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(mkdir -p /c/Development/nabad/nabad/client/app/sign-in/'[[...sign-in]]')",
+      "Bash(mkdir -p /c/Development/nabad/nabad/client/app/sign-up/donor/'[[...sign-up]]')"
     ]
   }
 }
