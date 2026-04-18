@@ -54,7 +54,7 @@ export default function FeaturesGrid() {
             <span className="text-tertiary">Mission-Critical</span> Reliability
           </h2>
           <p className="text-on-surface-variant text-lg">
-            Every feature is designed with a zero-failure mandate. We move blood where it's needed, seconds before it's too late.
+            Every feature is designed with a zero-failure mandate. We move blood where it&apos;s needed, seconds before it&apos;s too late.
           </p>
         </motion.div>
 

@@ -88,7 +88,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.75 }}
           >
-            The world's fastest blood supply network. Real-time matching, predictive logistics, and instant emergency broadcasts powered by Nabad's kinetic core engine.
+            The world&apos;s fastest blood supply network. Real-time matching, predictive logistics, and instant emergency broadcasts powered by Nabad&apos;s kinetic core engine.
           </motion.p>
 
           <motion.div
