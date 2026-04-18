@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(node src/index.js)",
+      "Bash(kill %1)",
+      "Bash(mkdir -p server/src)",
+      "Bash(cp src/index.js server/src/index.js)",
+      "Bash(cp package.json server/package.json)",
+      "Bash(cp package-lock.json server/package-lock.json)",
+      "Bash(cp .env server/.env)",
+      "Bash(npm create *)"
+    ]
+  }
+}
