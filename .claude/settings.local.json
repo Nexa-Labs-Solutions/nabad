@@ -9,7 +9,10 @@
       "Bash(cp package.json server/package.json)",
       "Bash(cp package-lock.json server/package-lock.json)",
       "Bash(cp .env server/.env)",
-      "Bash(npm create *)"
+      "Bash(npm create *)",
+      "WebFetch(domain:stitch.withgoogle.com)",
+      "Skill(stitch-design)",
+      "Bash(npm run *)"
     ]
   }
 }
