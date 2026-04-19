@@ -1,4 +1,4 @@
-// File: C:\Development\nabad\nabad\client\app\sign-up\donor\[[...sign-up]]\page.jsx
+// File: C:\Development\nabad\client\app\sign-up\donor\[[...sign-up]]\page.jsx
 import * as entry from '../../../../../../app/sign-up/donor/[[...sign-up]]/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

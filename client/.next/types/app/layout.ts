@@ -1,4 +1,4 @@
-// File: C:\Development\nabad\nabad\client\app\layout.jsx
+// File: C:\Development\nabad\client\app\layout.jsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

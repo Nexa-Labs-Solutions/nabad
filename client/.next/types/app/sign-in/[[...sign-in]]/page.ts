@@ -1,4 +1,4 @@
-// File: C:\Development\nabad\nabad\client\app\sign-in\[[...sign-in]]\page.jsx
+// File: C:\Development\nabad\client\app\sign-in\[[...sign-in]]\page.jsx
 import * as entry from '../../../../../app/sign-in/[[...sign-in]]/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
