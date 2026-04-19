@@ -1,4 +1,6 @@
 .claude
+
+# Environment variables
 server/.env
 server/.env.local
 server/.env.development
@@ -7,3 +9,29 @@ client/.env
 client/.env.local
 client/.env.development
 client/.env.production
+
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build outputs
+.next/
+dist/
+build/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
