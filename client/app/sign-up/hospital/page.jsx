@@ -1,27 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLanguage } from '@/context/LanguageContext'
+import NabadLogo from '@/components/NabadLogo'
 
-const STEP_LABELS = [
-  'Hospital Identity',
-  'Location & Contact',
-  'Medical Capabilities',
-  'Authorized Rep.',
-  'Review & Submit',
-]
-
-const GOVERNORATES = [
-  'Beirut', 'Mount Lebanon', 'North Lebanon',
-  'South Lebanon', 'Bekaa', 'Nabatieh', 'Akkar', 'Baalbek-Hermel',
-]
-const HOSPITAL_TYPES = [
-  'Government / Public', 'Private', 'NGO / Non-profit',
-  'Military', 'University / Teaching',
-]
-const REP_ROLES = [
-  'Hospital Director', 'Medical Director', 'Blood Bank Manager',
-  'Head of Emergency', 'Chief Nursing Officer', 'Administrative Director', 'Other',
-]
 const BLOOD_TYPES = ['A+', 'A−', 'B+', 'B−', 'O+', 'O−', 'AB+', 'AB−']
 
 const INITIAL = {
@@ -36,6 +18,7 @@ const INITIAL = {
   repEmail: '', repWhatsapp: '',
   authConfirm: false, dataConfirm: false, termsAgree: false,
 }
+
 
 function Field({ label, hint, children }) {
   return (
@@ -75,13 +58,26 @@ function ReviewCard({ title, children }) {
 }
 
 export default function HospitalRegistrationPage() {
+  const { lang, t } = useLanguage()
+  const sh = t.hospitalSignUp
+  const [mounted, setMounted] = useState(false)
   const [step, setStep] = useState(0)
   const [data, setData] = useState(INITIAL)
   const [submitting, setSubmitting] = useState(false)
   const [refNumber, setRefNumber] = useState('')
   const [error, setError] = useState('')
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true)
+  }, [])
+
   const set = (field, value) => setData((d) => ({ ...d, [field]: value }))
+
+  if (!mounted) {
+    return <div className="min-h-screen bg-[#080e1a]" /> // Skeleton or empty state to prevent mismatch
+  }
+
 
   const toggleBloodType = (type) => {
     setData((d) => ({
@@ -94,7 +90,7 @@ export default function HospitalRegistrationPage() {
 
   const handleSubmit = async () => {
     if (!data.termsAgree) {
-      setError('Please agree to the terms before submitting.')
+      setError(sh.review.errorTerms)
       return
     }
     setError('')
@@ -110,16 +106,16 @@ export default function HospitalRegistrationPage() {
       setRefNumber(ref)
       setStep(5)
     } catch {
-      setError('Submission failed. Please try again.')
+      setError(sh.review.errorSubmit)
     } finally {
       setSubmitting(false)
     }
   }
 
   const slideVariants = {
-    enter: { opacity: 0, x: 30 },
+    enter: { opacity: 0, x: lang === 'ar' ? -30 : 30 },
     center: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -30 },
+    exit: { opacity: 0, x: lang === 'ar' ? 30 : -30 },
   }
 
   return (
@@ -136,23 +132,13 @@ export default function HospitalRegistrationPage() {
           transition={{ duration: 0.5 }}
         >
           <a href="/sign-up" className="flex items-center gap-2 text-[#e3bebd]/50 hover:text-[#ffb3b3] transition-colors text-sm">
-            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>arrow_back</span>
-            Back
-          </a>
-          <div className="flex items-center gap-2.5">
-            <div className="relative w-7 h-7 flex items-center justify-center">
-              <motion.div
-                className="absolute inset-0 rounded-full border border-[#ff5260]/50"
-                animate={{ scale: [1, 1.9], opacity: [0.5, 0] }}
-                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
-              />
-              <span className="material-symbols-outlined text-[#ff5260] relative z-10" style={{ fontVariationSettings: "'FILL' 1", fontSize: '18px' }}>
-                favorite
-              </span>
-            </div>
-            <span className="text-xl font-black bg-gradient-to-r from-[#ffb3b3] to-[#ff5260] bg-clip-text text-transparent">
-              Nabad
+            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+              {lang === 'ar' ? 'arrow_forward' : 'arrow_back'}
             </span>
+            {sh.actions.back}
+          </a>
+          <div className="flex items-center gap-3">
+             <NabadLogo size="md" href={null} />
           </div>
           <div className="w-20" />
         </motion.div>
@@ -173,21 +159,19 @@ export default function HospitalRegistrationPage() {
                   </span>
                 </div>
                 <span className="text-xs font-bold text-[#ff5260] uppercase tracking-widest">
-                  Nabad — Hospital Registration
+                  Nabad — {sh.steps[step]}
                 </span>
               </div>
-              <h1 className="text-xl font-black text-[#dde2f3] mt-2">Hospital Registration Request</h1>
-              <p className="text-xs text-[#e3bebd]/50 mt-1">
-                Complete all sections. Your application will be reviewed before access is granted.
-              </p>
+              <h1 className="text-xl font-black text-[#dde2f3] mt-2">{sh.title}</h1>
+              <p className="text-xs text-[#e3bebd]/50 mt-1">{sh.subtitle}</p>
 
               {/* Progress bar */}
               <div className="mt-5">
                 <p className="text-xs text-[#e3bebd]/40 mb-2">
-                  Step {step + 1} of 5 — {STEP_LABELS[step]}
+                  {sh.stepLabel} {step + 1} {sh.of} 5 — {sh.steps[step]}
                 </p>
                 <div className="flex gap-1">
-                  {STEP_LABELS.map((_, i) => (
+                  {sh.steps.map((_, i) => (
                     <div
                       key={i}
                       className={`flex-1 h-1 rounded-full transition-all duration-500 ${
@@ -210,42 +194,44 @@ export default function HospitalRegistrationPage() {
               {/* Step 1 — Hospital Identity */}
               {step === 0 && (
                 <motion.div key="s0" variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
-                  <p className="text-sm font-bold text-[#dde2f3] mb-5 pb-3 border-b border-[#5b4040]/15">
-                    Hospital identity
+                  <p className="text-sm font-bold text-[#dde2f3] mb-5 pb-3 border-b border-[#5b4040]/15 uppercase tracking-wide">
+                    {sh.identity.title}
                   </p>
                   <div className="grid grid-cols-1 gap-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Field label="Official hospital name (Arabic)">
-                        <input className={inputCls} placeholder="اسم المستشفى بالعربية" value={data.nameAr} onChange={(e) => set('nameAr', e.target.value)} />
+                      <Field label={sh.identity.nameAr}>
+                        <input className={inputCls} placeholder={sh.identity.placeholderNameAr} value={data.nameAr} onChange={(e) => set('nameAr', e.target.value)} />
                       </Field>
-                      <Field label="Official hospital name (English)">
-                        <input className={inputCls} placeholder="e.g. Makassed General Hospital" value={data.nameEn} onChange={(e) => set('nameEn', e.target.value)} />
+                      <Field label={sh.identity.nameEn}>
+                        <input className={inputCls} placeholder={sh.identity.placeholderNameEn} value={data.nameEn} onChange={(e) => set('nameEn', e.target.value)} />
                       </Field>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Field label="Hospital type">
+                      <Field label={sh.identity.type}>
                         <div className="relative">
                           <select className={selectCls} value={data.hospitalType} onChange={(e) => set('hospitalType', e.target.value)}>
-                            <option value="">Select type</option>
-                            {HOSPITAL_TYPES.map((t) => <option key={t}>{t}</option>)}
+                            <option value="">{sh.identity.selectType}</option>
+                            {Object.entries(sh.identity.types).map(([key, label]) => (
+                               <option key={key} value={label}>{label}</option>
+                            ))}
                           </select>
-                          <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[#e3bebd]/40 pointer-events-none" style={{ fontSize: '16px' }}>expand_more</span>
+                          <span className={`${lang === 'ar' ? 'left-3' : 'right-3'} material-symbols-outlined absolute top-1/2 -translate-y-1/2 text-[#e3bebd]/40 pointer-events-none`} style={{ fontSize: '16px' }}>expand_more</span>
                         </div>
                       </Field>
-                      <Field label="Ministry of Public Health registration no." hint="Issued by the Lebanese Ministry of Public Health">
-                        <input className={inputCls} placeholder="e.g. MOPH-2024-XXXX" value={data.mophReg} onChange={(e) => set('mophReg', e.target.value)} />
+                      <Field label={sh.identity.moph} hint={sh.identity.mophHint}>
+                        <input className={inputCls} placeholder={sh.identity.placeholderMoph} value={data.mophReg} onChange={(e) => set('mophReg', e.target.value)} />
                       </Field>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Field label="Year established">
-                        <input className={inputCls} type="number" placeholder="e.g. 1985" min="1900" max="2025" value={data.yearEst} onChange={(e) => set('yearEst', e.target.value)} />
+                      <Field label={sh.identity.year}>
+                        <input className={inputCls} type="number" placeholder={sh.identity.placeholderYear} min="1900" max="2025" value={data.yearEst} onChange={(e) => set('yearEst', e.target.value)} />
                       </Field>
-                      <Field label="Number of licensed beds">
-                        <input className={inputCls} type="number" placeholder="e.g. 200" min="1" value={data.bedCount} onChange={(e) => set('bedCount', e.target.value)} />
+                      <Field label={sh.identity.beds}>
+                        <input className={inputCls} type="number" placeholder={sh.identity.placeholderBeds} min="1" value={data.bedCount} onChange={(e) => set('bedCount', e.target.value)} />
                       </Field>
                     </div>
-                    <Field label="Brief description of services offered">
-                      <textarea className={`${inputCls} resize-none h-20`} placeholder="e.g. Full-service emergency, surgery, maternity, ICU..." value={data.description} onChange={(e) => set('description', e.target.value)} />
+                    <Field label={sh.identity.desc}>
+                      <textarea className={`${inputCls} resize-none h-20`} placeholder={sh.identity.placeholderDesc} value={data.description} onChange={(e) => set('description', e.target.value)} />
                     </Field>
                   </div>
                 </motion.div>
@@ -254,49 +240,49 @@ export default function HospitalRegistrationPage() {
               {/* Step 2 — Location & Contact */}
               {step === 1 && (
                 <motion.div key="s1" variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
-                  <p className="text-sm font-bold text-[#dde2f3] mb-5 pb-3 border-b border-[#5b4040]/15">
-                    Location & contact
+                  <p className="text-sm font-bold text-[#dde2f3] mb-5 pb-3 border-b border-[#5b4040]/15 uppercase tracking-wide">
+                    {sh.location.title}
                   </p>
                   <div className="grid grid-cols-1 gap-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Field label="Governorate (Mohafaza)">
+                      <Field label={sh.location.gov}>
                         <div className="relative">
                           <select className={selectCls} value={data.governorate} onChange={(e) => set('governorate', e.target.value)}>
-                            <option value="">Select governorate</option>
-                            {GOVERNORATES.map((g) => <option key={g}>{g}</option>)}
+                            <option value="">{sh.location.selectGov}</option>
+                            {sh.location.governorates.map((g) => <option key={g}>{g}</option>)}
                           </select>
-                          <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[#e3bebd]/40 pointer-events-none" style={{ fontSize: '16px' }}>expand_more</span>
+                          <span className={`${lang === 'ar' ? 'left-3' : 'right-3'} material-symbols-outlined absolute top-1/2 -translate-y-1/2 text-[#e3bebd]/40 pointer-events-none`} style={{ fontSize: '16px' }}>expand_more</span>
                         </div>
                       </Field>
-                      <Field label="City / District">
-                        <input className={inputCls} placeholder="e.g. Saida" value={data.city} onChange={(e) => set('city', e.target.value)} />
+                      <Field label={sh.location.city}>
+                        <input className={inputCls} placeholder={sh.location.placeholderCity} value={data.city} onChange={(e) => set('city', e.target.value)} />
                       </Field>
                     </div>
-                    <Field label="Full street address">
-                      <input className={inputCls} placeholder="Building, street, area" value={data.address} onChange={(e) => set('address', e.target.value)} />
+                    <Field label={sh.location.address}>
+                      <input className={inputCls} placeholder={sh.location.placeholderAddress} value={data.address} onChange={(e) => set('address', e.target.value)} />
                     </Field>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Field label="GPS latitude" hint="Open Google Maps, long-press your location">
-                        <input className={inputCls} placeholder="e.g. 33.5570" value={data.gpsLat} onChange={(e) => set('gpsLat', e.target.value)} />
+                      <Field label={sh.location.lat} hint={sh.location.gpsHint}>
+                        <input className={inputCls} placeholder={sh.location.placeholderLat} value={data.gpsLat} onChange={(e) => set('gpsLat', e.target.value)} />
                       </Field>
-                      <Field label="GPS longitude">
-                        <input className={inputCls} placeholder="e.g. 35.3714" value={data.gpsLng} onChange={(e) => set('gpsLng', e.target.value)} />
-                      </Field>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Field label="Main hospital phone">
-                        <input className={inputCls} type="tel" placeholder="+961 X XXX XXX" value={data.phoneMain} onChange={(e) => set('phoneMain', e.target.value)} />
-                      </Field>
-                      <Field label="Emergency / blood bank direct line">
-                        <input className={inputCls} type="tel" placeholder="+961 X XXX XXX" value={data.phoneEmergency} onChange={(e) => set('phoneEmergency', e.target.value)} />
+                      <Field label={sh.location.lng}>
+                        <input className={inputCls} placeholder={sh.location.placeholderLng} value={data.gpsLng} onChange={(e) => set('gpsLng', e.target.value)} />
                       </Field>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Field label="Official email address">
-                        <input className={inputCls} type="email" placeholder="bloodbank@hospital.lb" value={data.email} onChange={(e) => set('email', e.target.value)} />
+                      <Field label={sh.location.phone}>
+                        <input className={inputCls} type="tel" placeholder={sh.location.placeholderPhone} value={data.phoneMain} onChange={(e) => set('phoneMain', e.target.value)} />
                       </Field>
-                      <Field label="Website (optional)">
-                        <input className={inputCls} type="url" placeholder="https://hospital.lb" value={data.website} onChange={(e) => set('website', e.target.value)} />
+                      <Field label={sh.location.emergency}>
+                        <input className={inputCls} type="tel" placeholder={sh.location.placeholderPhone} value={data.phoneEmergency} onChange={(e) => set('phoneEmergency', e.target.value)} />
+                      </Field>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Field label={sh.location.email}>
+                        <input className={inputCls} type="email" placeholder={sh.location.placeholderEmail} value={data.email} onChange={(e) => set('email', e.target.value)} />
+                      </Field>
+                      <Field label={sh.location.website}>
+                        <input className={inputCls} type="url" placeholder={sh.location.placeholderWebsite} value={data.website} onChange={(e) => set('website', e.target.value)} />
                       </Field>
                     </div>
                   </div>
@@ -306,15 +292,15 @@ export default function HospitalRegistrationPage() {
               {/* Step 3 — Medical Capabilities */}
               {step === 2 && (
                 <motion.div key="s2" variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
-                  <p className="text-sm font-bold text-[#dde2f3] mb-5 pb-3 border-b border-[#5b4040]/15">
-                    Medical capabilities
+                  <p className="text-sm font-bold text-[#dde2f3] mb-5 pb-3 border-b border-[#5b4040]/15 uppercase tracking-wide">
+                    {sh.medical.title}
                   </p>
 
                   <div className="space-y-5">
                     <div>
-                      <p className="text-xs font-medium text-[#e3bebd]/70 mb-3">Does the hospital have an on-site blood bank?</p>
-                      <div className="grid grid-cols-2 gap-3">
-                        {[{ val: 'yes', label: 'Yes, on-site' }, { val: 'no', label: 'No — coordinate externally' }].map((opt) => (
+                      <p className="text-xs font-medium text-[#e3bebd]/70 mb-3">{sh.medical.bloodBank}</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {[{ val: 'yes', label: sh.medical.bbYes }, { val: 'no', label: sh.medical.bbNo }].map((opt) => (
                           <button
                             key={opt.val}
                             type="button"
@@ -337,9 +323,9 @@ export default function HospitalRegistrationPage() {
                     </div>
 
                     <div>
-                      <p className="text-xs font-medium text-[#e3bebd]/70 mb-3">Emergency department status</p>
-                      <div className="grid grid-cols-3 gap-3">
-                        {[{ val: '24-7', label: '24 / 7 open' }, { val: 'limited', label: 'Limited hours' }, { val: 'none', label: 'No ER' }].map((opt) => (
+                      <p className="text-xs font-medium text-[#e3bebd]/70 mb-3">{sh.medical.erStatus}</p>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {[{ val: '24-7', label: sh.medical.er247 }, { val: 'limited', label: sh.medical.erLimited }, { val: 'none', label: sh.medical.erNone }].map((opt) => (
                           <button
                             key={opt.val}
                             type="button"
@@ -362,7 +348,7 @@ export default function HospitalRegistrationPage() {
                     </div>
 
                     <div>
-                      <p className="text-xs font-medium text-[#e3bebd]/70 mb-3">Blood types your hospital typically requests</p>
+                      <p className="text-xs font-medium text-[#e3bebd]/70 mb-3">{sh.medical.bloodTypes}</p>
                       <div className="flex flex-wrap gap-2">
                         {BLOOD_TYPES.map((type) => (
                           <button
@@ -382,15 +368,15 @@ export default function HospitalRegistrationPage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Field label="Avg. monthly blood unit needs (approx.)">
-                        <input className={inputCls} type="number" placeholder="e.g. 150" min="1" value={data.monthlyUnits} onChange={(e) => set('monthlyUnits', e.target.value)} />
+                      <Field label={sh.medical.monthlyNeeds}>
+                        <input className={inputCls} type="number" placeholder={sh.medical.placeholderNeeds} min="1" value={data.monthlyUnits} onChange={(e) => set('monthlyUnits', e.target.value)} />
                       </Field>
-                      <Field label="ICU beds (if applicable)">
-                        <input className={inputCls} type="number" placeholder="e.g. 20" min="0" value={data.icuBeds} onChange={(e) => set('icuBeds', e.target.value)} />
+                      <Field label={sh.medical.icuBeds}>
+                        <input className={inputCls} type="number" placeholder={sh.medical.placeholderIcu} min="0" value={data.icuBeds} onChange={(e) => set('icuBeds', e.target.value)} />
                       </Field>
                     </div>
-                    <Field label="Additional notes about blood / transfusion needs (optional)">
-                      <textarea className={`${inputCls} resize-none h-20`} placeholder="e.g. We frequently need O− for trauma surgery..." value={data.bloodNotes} onChange={(e) => set('bloodNotes', e.target.value)} />
+                    <Field label={sh.medical.notes}>
+                      <textarea className={`${inputCls} resize-none h-20`} placeholder={sh.medical.placeholderNotes} value={data.bloodNotes} onChange={(e) => set('bloodNotes', e.target.value)} />
                     </Field>
                   </div>
                 </motion.div>
@@ -399,49 +385,48 @@ export default function HospitalRegistrationPage() {
               {/* Step 4 — Authorized Representative */}
               {step === 3 && (
                 <motion.div key="s3" variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
-                  <p className="text-sm font-bold text-[#dde2f3] mb-5 pb-3 border-b border-[#5b4040]/15">
-                    Authorized representative
+                  <p className="text-sm font-bold text-[#dde2f3] mb-5 pb-3 border-b border-[#5b4040]/15 uppercase tracking-wide">
+                    {sh.rep.title}
                   </p>
-                  <div className="bg-[#080e1a] rounded-xl border border-[#5b4040]/15 p-4 mb-5 text-xs text-[#e3bebd]/50 leading-relaxed">
-                    The person signing this application must be authorized to act on behalf of the hospital.
-                    They will be the primary contact during the review process.
+                  <div className="bg-[#080e1a] rounded-xl border border-[#5b4040]/15 p-4 mb-5 text-xs text-[#e3bebd]/50 leading-relaxed italic">
+                    {sh.rep.disclaimer}
                   </div>
                   <div className="grid grid-cols-1 gap-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Field label="Full name">
-                        <input className={inputCls} placeholder="First and last name" value={data.repName} onChange={(e) => set('repName', e.target.value)} />
+                      <Field label={sh.rep.name}>
+                        <input className={inputCls} placeholder={sh.rep.placeholderName} value={data.repName} onChange={(e) => set('repName', e.target.value)} />
                       </Field>
-                      <Field label="Job title / role">
+                      <Field label={sh.rep.role}>
                         <div className="relative">
                           <select className={selectCls} value={data.repRole} onChange={(e) => set('repRole', e.target.value)}>
-                            <option value="">Select role</option>
-                            {REP_ROLES.map((r) => <option key={r}>{r}</option>)}
+                            <option value="">{sh.rep.selectRole}</option>
+                            {sh.rep.roles.map((r) => <option key={r}>{r}</option>)}
                           </select>
-                          <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[#e3bebd]/40 pointer-events-none" style={{ fontSize: '16px' }}>expand_more</span>
+                          <span className={`${lang === 'ar' ? 'left-3' : 'right-3'} material-symbols-outlined absolute top-1/2 -translate-y-1/2 text-[#e3bebd]/40 pointer-events-none`} style={{ fontSize: '16px' }}>expand_more</span>
                         </div>
                       </Field>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Field label="Lebanese national ID number">
-                        <input className={inputCls} placeholder="e.g. 123456789" value={data.repNationalId} onChange={(e) => set('repNationalId', e.target.value)} />
+                      <Field label={sh.rep.id}>
+                        <input className={inputCls} placeholder={sh.rep.placeholderId} value={data.repNationalId} onChange={(e) => set('repNationalId', e.target.value)} />
                       </Field>
-                      <Field label="Direct mobile number">
-                        <input className={inputCls} type="tel" placeholder="+961 X XXX XXX" value={data.repPhone} onChange={(e) => set('repPhone', e.target.value)} />
+                      <Field label={sh.rep.phone}>
+                        <input className={inputCls} type="tel" placeholder={sh.rep.placeholderPhone} value={data.repPhone} onChange={(e) => set('repPhone', e.target.value)} />
                       </Field>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Field label="Work email">
-                        <input className={inputCls} type="email" placeholder="name@hospital.lb" value={data.repEmail} onChange={(e) => set('repEmail', e.target.value)} />
+                      <Field label={sh.rep.email}>
+                        <input className={inputCls} type="email" placeholder={sh.rep.placeholderEmail} value={data.repEmail} onChange={(e) => set('repEmail', e.target.value)} />
                       </Field>
-                      <Field label="WhatsApp number (for urgent coordination)">
-                        <input className={inputCls} type="tel" placeholder="+961 X XXX XXX" value={data.repWhatsapp} onChange={(e) => set('repWhatsapp', e.target.value)} />
+                      <Field label={sh.rep.whatsapp}>
+                        <input className={inputCls} type="tel" placeholder={sh.rep.placeholderPhone} value={data.repWhatsapp} onChange={(e) => set('repWhatsapp', e.target.value)} />
                       </Field>
                     </div>
 
                     <div className="space-y-3 mt-1">
                       {[
-                        { field: 'authConfirm', label: 'I confirm that I am duly authorized to submit this registration on behalf of the hospital listed above.' },
-                        { field: 'dataConfirm', label: 'I confirm that all information provided in this application is accurate and complete.' },
+                        { field: 'authConfirm', label: sh.rep.authConfirm },
+                        { field: 'dataConfirm', label: sh.rep.dataConfirm },
                       ].map(({ field, label }) => (
                         <label key={field} className="flex items-start gap-3 cursor-pointer group">
                           <div
@@ -467,37 +452,36 @@ export default function HospitalRegistrationPage() {
               {/* Step 5 — Review & Submit */}
               {step === 4 && (
                 <motion.div key="s4" variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
-                  <p className="text-sm font-bold text-[#dde2f3] mb-2 pb-3 border-b border-[#5b4040]/15">
-                    Review & submit
+                  <p className="text-sm font-bold text-[#dde2f3] mb-2 pb-3 border-b border-[#5b4040]/15 uppercase tracking-wide">
+                    {sh.review.title}
                   </p>
                   <div className="bg-[#080e1a] rounded-xl border border-[#5b4040]/15 p-4 mb-5 text-xs text-[#e3bebd]/50 leading-relaxed">
-                    Review your application below. After submission, the Nabad team will contact your
-                    authorized representative within <strong className="text-[#ffb3b3]">2–5 business days</strong>.
+                    {sh.review.disclaimer} <strong className="text-[#ffb3b3]">{sh.review.businessDays}</strong>.
                   </div>
 
-                  <ReviewCard title="Hospital identity">
-                    <ReviewRow label="Name (English)" value={data.nameEn} />
-                    <ReviewRow label="Name (Arabic)" value={data.nameAr} />
-                    <ReviewRow label="Type" value={data.hospitalType} />
-                    <ReviewRow label="MOPH registration" value={data.mophReg} />
-                    <ReviewRow label="Year established" value={data.yearEst} />
-                    <ReviewRow label="Licensed beds" value={data.bedCount} />
+                  <ReviewCard title={sh.identity.title}>
+                    <ReviewRow label={sh.review.labels.nameEn} value={data.nameEn} />
+                    <ReviewRow label={sh.review.labels.nameAr} value={data.nameAr} />
+                    <ReviewRow label={sh.review.labels.type} value={data.hospitalType} />
+                    <ReviewRow label={sh.review.labels.moph} value={data.mophReg} />
+                    <ReviewRow label={sh.review.labels.year} value={data.yearEst} />
+                    <ReviewRow label={sh.review.labels.beds} value={data.bedCount} />
                   </ReviewCard>
 
-                  <ReviewCard title="Location & contact">
-                    <ReviewRow label="Governorate" value={data.governorate} />
-                    <ReviewRow label="City" value={data.city} />
-                    <ReviewRow label="Address" value={data.address} />
-                    <ReviewRow label="GPS" value={data.gpsLat && data.gpsLng ? `${data.gpsLat}, ${data.gpsLng}` : ''} />
-                    <ReviewRow label="Main phone" value={data.phoneMain} />
-                    <ReviewRow label="Email" value={data.email} />
+                  <ReviewCard title={sh.location.title}>
+                    <ReviewRow label={sh.review.labels.gov} value={data.governorate} />
+                    <ReviewRow label={sh.review.labels.city} value={data.city} />
+                    <ReviewRow label={sh.review.labels.address} value={data.address} />
+                    <ReviewRow label={sh.review.labels.gps} value={data.gpsLat && data.gpsLng ? `${data.gpsLat}, ${data.gpsLng}` : ''} />
+                    <ReviewRow label={sh.review.labels.phone} value={data.phoneMain} />
+                    <ReviewRow label={sh.review.labels.email} value={data.email} />
                   </ReviewCard>
 
-                  <ReviewCard title="Authorized representative">
-                    <ReviewRow label="Full name" value={data.repName} />
-                    <ReviewRow label="Role" value={data.repRole} />
-                    <ReviewRow label="Mobile" value={data.repPhone} />
-                    <ReviewRow label="Work email" value={data.repEmail} />
+                  <ReviewCard title={sh.rep.title}>
+                    <ReviewRow label={sh.review.labels.fullName} value={data.repName} />
+                    <ReviewRow label={sh.review.labels.role} value={data.repRole} />
+                    <ReviewRow label={sh.review.labels.mobile} value={data.repPhone} />
+                    <ReviewRow label={sh.review.labels.workEmail} value={data.repEmail} />
                   </ReviewCard>
 
                   <label className="flex items-start gap-3 cursor-pointer group mt-4">
@@ -514,8 +498,7 @@ export default function HospitalRegistrationPage() {
                       )}
                     </div>
                     <span className="text-xs text-[#e3bebd]/60 leading-relaxed" onClick={() => set('termsAgree', !data.termsAgree)}>
-                      I agree that Nabad may contact the hospital to verify this application,
-                      and understand that approval is at Nabad&apos;s sole discretion.
+                       {sh.review.terms}
                     </span>
                   </label>
 
@@ -560,7 +543,7 @@ export default function HospitalRegistrationPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.35 }}
                   >
-                    Application Submitted
+                    {sh.success.title}
                   </motion.h2>
 
                   <motion.p
@@ -569,9 +552,7 @@ export default function HospitalRegistrationPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.45 }}
                   >
-                    Thank you. Your hospital registration request has been received. The Nabad team will
-                    review your application and contact your authorized representative within
-                    <strong className="text-[#ffb3b3]"> 2–5 business days</strong>.
+                    {sh.success.message} <strong className="text-[#ffb3b3]">{sh.success.businessDays}</strong>.
                   </motion.p>
 
                   <motion.div
@@ -580,7 +561,7 @@ export default function HospitalRegistrationPage() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.55 }}
                   >
-                    Reference: <span className="text-[#ffb3b3] font-bold">{refNumber}</span>
+                    {sh.success.ref} <span className="text-[#ffb3b3] font-bold">{refNumber}</span>
                   </motion.div>
 
                   <motion.a
@@ -593,7 +574,7 @@ export default function HospitalRegistrationPage() {
                     whileTap={{ scale: 0.97 }}
                   >
                     <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>home</span>
-                    Back to Home
+                    {sh.success.back}
                   </motion.a>
                 </motion.div>
               )}
@@ -614,8 +595,10 @@ export default function HospitalRegistrationPage() {
                 whileHover={step > 0 ? { scale: 1.02 } : {}}
                 whileTap={step > 0 ? { scale: 0.97 } : {}}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_back</span>
-                Back
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                  {lang === 'ar' ? 'arrow_forward' : 'arrow_back'}
+                </span>
+                {sh.actions.back}
               </motion.button>
 
               {step < 4 ? (
@@ -626,8 +609,10 @@ export default function HospitalRegistrationPage() {
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                 >
-                  Continue
-                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span>
+                  {sh.actions.continue}
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                    {lang === 'ar' ? 'arrow_back' : 'arrow_forward'}
+                  </span>
                 </motion.button>
               ) : (
                 <motion.button
@@ -648,12 +633,12 @@ export default function HospitalRegistrationPage() {
                       >
                         progress_activity
                       </motion.span>
-                      Submitting...
+                      {sh.review.submitting}
                     </>
                   ) : (
                     <>
-                      Submit application
-                      <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>send</span>
+                      {sh.review.submit}
+                      <span className={`${lang === 'ar' ? '-scale-x-100' : ''} material-symbols-outlined`} style={{ fontSize: '16px' }}>send</span>
                     </>
                   )}
                 </motion.button>
@@ -665,3 +650,4 @@ export default function HospitalRegistrationPage() {
     </div>
   )
 }
+

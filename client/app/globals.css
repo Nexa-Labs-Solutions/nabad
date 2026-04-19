@@ -2,7 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+/* Force Material Symbols to be invisible while loading instead of showing raw text */
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-display: block;
+}
 
 @layer base {
   html {
@@ -51,4 +55,19 @@
 }
 .animate-float-slow-delay {
   animation: float-slow 10s ease-in-out infinite 2s;
+}
+
+.font-arabic {
+  font-family: var(--font-arabic), 'IBM Plex Sans Arabic', sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
