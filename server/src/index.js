@@ -8,37 +8,6 @@ import pg from "pg";
 const { Pool } = pg;
 const pool = new Pool({ connectionString: process.env.POSTGRES_URL });
 
-await pool.query(`
-  CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    clerk_id VARCHAR(255) UNIQUE NOT NULL,
-    email VARCHAR(255),
-    role VARCHAR(50) DEFAULT 'donor',
-    created_at TIMESTAMPTZ DEFAULT NOW()
-  )
-`);
-
-await pool.query(`
-  CREATE TABLE IF NOT EXISTS hospital_applications (
-    id SERIAL PRIMARY KEY,
-    ref_number VARCHAR(50) UNIQUE NOT NULL,
-    status VARCHAR(20) DEFAULT 'pending',
-    name_ar TEXT, name_en TEXT NOT NULL, hospital_type VARCHAR(100),
-    moph_reg VARCHAR(100), year_established INTEGER, bed_count INTEGER, description TEXT,
-    governorate VARCHAR(100), city VARCHAR(100), address TEXT,
-    gps_lat VARCHAR(50), gps_lng VARCHAR(50),
-    phone_main VARCHAR(50), phone_emergency VARCHAR(50),
-    email VARCHAR(255) NOT NULL, website VARCHAR(255),
-    has_blood_bank BOOLEAN, er_status VARCHAR(50),
-    blood_types_needed TEXT[], monthly_units INTEGER, icu_beds INTEGER, blood_notes TEXT,
-    rep_name TEXT, rep_role VARCHAR(100), rep_national_id VARCHAR(100),
-    rep_phone VARCHAR(50), rep_email VARCHAR(255), rep_whatsapp VARCHAR(50),
-    clerk_id VARCHAR(255),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-  )
-`);
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
